@@ -1,3 +1,4 @@
+const e = require('express');
 const mongodb = require('../db/connect');
 const ObjectId = require('mongodb').ObjectId;
 
@@ -32,57 +33,69 @@ const getSingle = async(req,res) => {
 }
 
 const createUser = async (req,res) => {
-    const user = {
-        name: req.body.name,
-        username: req.body.username,
-        Password: req.body.Password,
-        email: req.body.email,
-        auth: req.body.auth
-    }
-    const response = await mongodb
-    .getDb()
-    .collection('user')
-    .insertOne(user)
+  try{
+        const user = {
+            name: req.body.name,
+            username: req.body.username,
+            Password: req.body.Password,
+            email: req.body.email,
+            auth: req.body.auth
+        }
+        const response = await mongodb
+        .getDb()
+        .collection('user')
+        .insertOne(user)
 
-    if(response.acknowledged > 0){
-        res.status(204).send()
-    } else if (response.error){
-        res.status(500).json(response.error || "An error occoured updating the server" )
+        if(response.acknowledged){
+            res.status(201).json({id: response.insertedId})
+        }
+        else{res.status(500).json({message: 'Failed to create User'})}
+    }
+    catch(err){
+        res.status(500).json({message:err.message || 'Error fetching posts'})
     }
 }
 
 const updateUser = async (req,res) => {
-    const userId = new ObjectId(req.params.id);
-    const user = {
-        name: req.body.name,
-        username: req.body.username,
-        Password: req.body.Password,
-        email: req.body.email,
-        auth: req.body.auth
+    try{
+        const userId = new ObjectId(req.params.id);
+        const user = {
+            name: req.body.name,
+            username: req.body.username,
+            Password: req.body.Password,
+            email: req.body.email,
+            auth: req.body.auth
+        }
+        const response = await mongodb
+        .getDb()
+        .collection('user')
+        .replaceOne({ _id: userId }, user)
+
+        res.status(201).json({ id: response.insertedId })
+
+        if(response.modifiedCount > 0){
+            res.status(204).send()
+        } else if(response.error) {
+            res.status(500).json(response.error || "An error occoured updating the server" )
+        }
     }
-    const response = await mongodb
-    .getDb()
-    .collection('user')
-    .replaceOne({ _id: userId }, user)
-
-    res.status(201).json({ id: response.insertedId })
-
-    if(response.modifiedCount > 0){
-        res.status(204).send()
-    } else if(response.error) {
-        res.status(500).json(response.error || "An error occoured updating the server" )
+    catch(err){
+        res.status(500).json({message:err.message || 'Error fetching posts'})
     }
 }
 const deleteUser = async (req,res) => {
-    const userId = new ObjectId(req.params.id)
-    const response = await mongodb
-    .getDb()
-    .collection('user')
-    .deleteOne({_id: userId},true)
-    if (response.deletedCount > 0){
-        res.status(204).send()
-    } else if(response.error){
-        res.status(500).json(response.error || "Some Error occoured while deleting the user")
+    try{
+        const userId = new ObjectId(req.params.id)
+        const response = await mongodb
+        .getDb()
+        .collection('user')
+        .deleteOne({_id: userId},true)
+        if (response.deletedCount > 0){
+            res.status(204).send()
+        }
+    }
+    catch(err){
+        res.status(500).json({message:err.message || 'Error fetching posts'})
     }
 }
 

@@ -5,7 +5,8 @@ if(validation.passes()){
      callback(null,true)
 }
 else{
-        callback.errors, false
+        callback(validation.errors.all(), false)
     }
 };
 
+module.exports = validator

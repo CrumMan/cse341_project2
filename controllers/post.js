@@ -47,32 +47,29 @@ const getSingle = async(req,res) => {
 
 const createPost = async (req,res) => {
     try{
-    const id = req.params.id;
-    if (!ObjectId.isValid(id)){
-        return res.status(400).json({message:"ERR 400: Invalid user ID"})
-    }
-    const userId = new ObjectId(req.params.id)
-        mongodb
-        .getDb()
-        .collection('user')
-        .find({_id: userId})
-        .toArray()
-    
-    const post = {
-        userId: userId,
-        content:req.body.content
-    }
-    const response = await mongodb
-    .getDb()
-    .collection('post')
-    .insertOne(post)
-
-    if(response.acknowledged > 0){
-        res.status(201).send(response)
-    } 
-    else if(response.error){
-        res.status(500).json(response.error || "An error occoured updating the server" )
+        const id = req.params.id;
+        if (!ObjectId.isValid(id)){
+            return res.status(400).json({message:"ERR 400: Invalid user ID"})
         }
+        const userId = new ObjectId(req.params.id)
+            mongodb
+            .getDb()
+            .collection('user')
+            .find({_id: userId})
+            .toArray()
+        
+        const post = {
+            userId: userId,
+            content:req.body.content
+        }
+        const response = await mongodb
+        .getDb()
+        .collection('post')
+        .insertOne(post)
+
+        if(response.acknowledged > 0){
+            res.status(201).send(response)
+        } 
     }
 catch(err){
         res.status(500).json({message:err.message || 'Error fetching posts'})
@@ -98,8 +95,6 @@ try{
 
     if(response.modifiedCount > 0){
         res.status(204).send()
-    } else if(response.error){
-        res.status(500).json(response.error || "An error occoured updating the server" )
     }
 }
 catch(err){
@@ -115,8 +110,6 @@ const deletePost = async (req,res) => {
         .deleteOne({_id: postId},true)
         if (response.deletedCount > 0){
             res.status(204).send()
-        } else if(response.error) {
-            res.status(500).json(response.error || "Some Error occoured while deleting the post")
         }
     }
     catch(err){

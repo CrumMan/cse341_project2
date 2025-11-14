@@ -1,10 +1,7 @@
 const validator = require('../helpers/validate')
 const saveContact = (req,res,next) => {
     const validationRule = {
-        name: "required|string",
-        username: "required|string",
-        email: "required|string",
-        auth: "required|string",
+        content: "required|string"
     }
     validator(req.body, validationRule, {}, (err,status) =>{
         if(!status){
