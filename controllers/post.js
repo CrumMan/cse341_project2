@@ -1,0 +1,133 @@
+const mongodb = require('../db/connect');
+const ObjectId = require('mongodb').ObjectId;
+
+
+const getAll = async (req, res) => {
+    try{mongodb
+    .getDb()
+    .collection('post')
+    .find()
+    .toArray()
+    .then((err, post) => {
+        if (err){
+            res.status(400).json({message:err})
+            return;
+        }
+        res.setHeader('content-type',' application/json')
+        res.status(200).json(post)
+    })}
+    catch(err){
+        res.status(500).json({message:err.message || 'Error fetching posts'})
+    }
+}
+
+const getSingle = async(req,res) => {
+   try{
+     if (!ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ message: 'Error 400: Invalid post ID format' });
+  }
+    const postId = new ObjectId(req.params.id)
+    mongodb
+    .getDb()
+    .collection('post')
+    .find({_id: postId})
+    .toArray()
+    .then((err, post) => {
+        if (err){
+            res.status(400).json({message:err})
+            return;
+        }
+         res.setHeader('content-type',' application/json')
+         res.status(200).json(post[0])
+    })}
+    catch(err){
+        res.status(500).json({message:err.message || 'Error fetching posts'})
+    }
+}
+
+const createPost = async (req,res) => {
+    try{
+    const id = req.params.id;
+    if (!ObjectId.isValid(id)){
+        return res.status(400).json({message:"ERR 400: Invalid user ID"})
+    }
+    const userId = new ObjectId(req.params.id)
+        mongodb
+        .getDb()
+        .collection('user')
+        .find({_id: userId})
+        .toArray()
+    
+    const post = {
+        userId: userId,
+        content:req.body.content
+    }
+    const response = await mongodb
+    .getDb()
+    .collection('post')
+    .insertOne(post)
+
+    if(response.acknowledged > 0){
+        res.status(201).send(response)
+    } 
+    else {
+        res.status(500).json(response.error || "An error occoured updating the server" )
+        }
+    }
+catch(err){
+        res.status(500).json({message:err.message || 'Error fetching posts'})
+    }
+}
+
+const updatePost = async (req,res) => {
+try{
+    const id = req.params.id;
+    if (!ObjectId.isValid(id)){
+        return res.status(400).json({message: "ERR 400: Invalid user ID"})
+    }
+    const postId = new ObjectId(req.params.id);
+    const post = {
+        content:req.body.content
+    }
+    const response = await mongodb
+    .getDb()
+    .collection('post')
+    .replaceOne({ _id: postId }, post)
+
+    res.status(201).json({ id: response.insertedId })
+
+    if(response.modifiedCount > 0){
+        res.status(204).send()
+    } else {
+        res.status(500).json(response.error || "An error occoured updating the server" )
+    }
+}
+catch(err){
+        res.status(500).json({message:err.message || 'Error fetching posts'})
+    }
+}
+const deletePost = async (req,res) => {
+    try{
+        const postId = new ObjectId(req.params.id)
+        const response = await mongodb
+        .getDb()
+        .collection('post')
+        .deleteOne({_id: postId},true)
+        if (response.deletedCount > 0){
+            res.status(204).send()
+        } else {
+            res.status(500).json(response.error || "Some Error occoured while deleting the post")
+        }
+    }
+    catch(err){
+        res.status(500).json({message:err.message || 'Error fetching posts'})
+    }
+}
+
+module.exports = {
+getAll,
+getSingle,
+createPost,
+updatePost,
+deletePost
+}
