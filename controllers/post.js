@@ -70,7 +70,7 @@ const createPost = async (req,res) => {
     if(response.acknowledged > 0){
         res.status(201).send(response)
     } 
-    else {
+    else if(response.error){
         res.status(500).json(response.error || "An error occoured updating the server" )
         }
     }
@@ -98,7 +98,7 @@ try{
 
     if(response.modifiedCount > 0){
         res.status(204).send()
-    } else {
+    } else if(response.error){
         res.status(500).json(response.error || "An error occoured updating the server" )
     }
 }
@@ -115,7 +115,7 @@ const deletePost = async (req,res) => {
         .deleteOne({_id: postId},true)
         if (response.deletedCount > 0){
             res.status(204).send()
-        } else {
+        } else if(response.error) {
             res.status(500).json(response.error || "Some Error occoured while deleting the post")
         }
     }

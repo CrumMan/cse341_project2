@@ -46,7 +46,7 @@ const createUser = async (req,res) => {
 
     if(response.acknowledged > 0){
         res.status(204).send()
-    } else {
+    } else if (response.error){
         res.status(500).json(response.error || "An error occoured updating the server" )
     }
 }
@@ -69,7 +69,7 @@ const updateUser = async (req,res) => {
 
     if(response.modifiedCount > 0){
         res.status(204).send()
-    } else {
+    } else if(response.error) {
         res.status(500).json(response.error || "An error occoured updating the server" )
     }
 }
@@ -81,7 +81,7 @@ const deleteUser = async (req,res) => {
     .deleteOne({_id: userId},true)
     if (response.deletedCount > 0){
         res.status(204).send()
-    } else {
+    } else if(response.error){
         res.status(500).json(response.error || "Some Error occoured while deleting the user")
     }
 }
