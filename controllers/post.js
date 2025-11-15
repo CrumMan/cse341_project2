@@ -3,19 +3,21 @@ const ObjectId = require('mongodb').ObjectId;
 
 
 const getAll = async (req, res) => {
-    try{mongodb
+    try{
+     mongodb
     .getDb()
     .collection('post')
     .find()
     .toArray()
-    .then((err, post) => {
-        if (err){
-            res.status(400).json({message:err})
-            return;
-        }
+    .then(posts => {
+            if (!posts || posts.length === 0) {
+        return res.status(400).json({ message: "No posts found" });
+    }
+
         res.setHeader('content-type',' application/json')
-        res.status(200).json(post)
-    })}
+        res.status(200).json(posts)
+    })
+}
     catch(err){
         res.status(500).json({message:err.message || 'Error fetching posts'})
     }
@@ -32,11 +34,10 @@ const getSingle = async(req,res) => {
     .collection('post')
     .find({_id: postId})
     .toArray()
-    .then((err, post) => {
-        if (err){
-            res.status(400).json({message:err})
-            return;
-        }
+    .then(post => {
+        if (!post || post.length === 0) {
+        return res.status(400).json({ message: "No posts found" });
+    }
          res.setHeader('content-type',' application/json')
          res.status(200).json(post[0])
     })}
@@ -83,9 +84,17 @@ try{
         return res.status(400).json({message: "ERR 400: Invalid user ID"})
     }
     const postId = new ObjectId(req.params.id);
-    const post = {
-        content:req.body.content
+    const existingPost = await mongodb
+    .getDb()
+    .collection('post')
+    .findOne({_id: postId})
+    if(!existingPost){
+        return res.status(404).json({message: "Post not found"})
     }
+        const post = {
+            userId: existingPost.userId,
+            content:req.body.content
+        }
     const response = await mongodb
     .getDb()
     .collection('post')
