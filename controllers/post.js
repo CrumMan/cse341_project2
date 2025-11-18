@@ -19,7 +19,7 @@ const getAll = async (req, res) => {
     })
 }
     catch(err){
-        res.status(500).json({message:err.message || 'Error fetching posts'})
+        res.status(500).json({message:err.message || 'Error fetching posts collection'})
     }
 }
 
@@ -42,7 +42,7 @@ const getSingle = async(req,res) => {
          res.status(200).json(post[0])
     })}
     catch(err){
-        res.status(500).json({message:err.message || 'Error fetching posts'})
+        res.status(500).json({message:err.message || 'Error fetching posts collection'})
     }
 }
 
@@ -73,7 +73,7 @@ const createPost = async (req,res) => {
         } 
     }
 catch(err){
-        res.status(500).json({message:err.message || 'Error fetching posts'})
+        res.status(500).json({message:err.message || 'Error fetching posts collection'})
     }
 }
 
@@ -107,7 +107,7 @@ try{
     }
 }
 catch(err){
-        res.status(500).json({message:err.message || 'Error fetching posts'})
+        res.status(500).json({message:err.message || 'Error fetching posts collection'})
     }
 }
 const deletePost = async (req,res) => {
@@ -122,7 +122,7 @@ const deletePost = async (req,res) => {
         }
     }
     catch(err){
-        res.status(500).json({message:err.message || 'Error fetching posts'})
+        res.status(500).json({message:err.message || 'Error fetching posts collection'})
     }
 }
 

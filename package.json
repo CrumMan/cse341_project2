@@ -11,8 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^2.2.0",
+    "connect-flash": "^0.1.1",
+    "connect-pg-simple": "^10.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "express-messages": "^1.0.1",
+    "express-session": "^1.18.2",
     "mongodb": "^7.0.0",
     "swagger-autogen": "^2.23.7",
     "swagger-ui": "^5.30.2",

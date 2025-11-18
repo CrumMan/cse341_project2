@@ -3,33 +3,43 @@ const mongodb = require('../db/connect');
 const ObjectId = require('mongodb').ObjectId;
 
 const getAll = async (req, res) => {
-    mongodb
-    .getDb()
-    .collection('user')
-    .find()
-    .toArray().then((user) => {
-        res.setHeader('content-type',' application/json')
-        res.status(200).json(user)
-    })
+    try{
+        mongodb
+        .getDb()
+        .collection('user')
+        .find()
+        .toArray().then((user) => {
+            res.setHeader('content-type',' application/json')
+            res.status(200).json(user)
+        })
+    }
+    catch(err){
+        res.status(500).json({message:err.message || 'Error fetching users collection'})
+    }
 }
 
 const getSingle = async(req,res) => {
-    if (!ObjectId.isValid(req.params.id)) {
-    return res.status(400).json({ message: 'Invalid user ID format' });
-  }
-    const userId = new ObjectId(req.params.id)
-    mongodb
-    .getDb()
-    .collection('user')
-    .find({_id: userId})
-    .toArray()
-    .then((user) => {
-        if (!user[0]) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-        res.setHeader('content-type',' application/json')
-         res.status(200).json(user[0])
-    })
+    try{
+        if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ message: 'Invalid user ID format' });
+    }
+        const userId = new ObjectId(req.params.id)
+        mongodb
+        .getDb()
+        .collection('user')
+        .find({_id: userId})
+        .toArray()
+        .then((user) => {
+            if (!user[0]) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+            res.setHeader('content-type',' application/json')
+            res.status(200).json(user[0])
+        })
+    }
+    catch(err){
+        res.status(500).json({message:err.message || 'Error fetching users collection'})
+    }
 }
 
 const createUser = async (req,res) => {
@@ -52,7 +62,7 @@ const createUser = async (req,res) => {
         else{res.status(500).json({message: 'Failed to create User'})}
     }
     catch(err){
-        res.status(500).json({message:err.message || 'Error fetching posts'})
+        res.status(500).json({message:err.message || 'Error fetching users collection'})
     }
 }
 
@@ -80,7 +90,7 @@ const updateUser = async (req,res) => {
         }
     }
     catch(err){
-        res.status(500).json({message:err.message || 'Error fetching posts'})
+        res.status(500).json({message:err.message || 'Error fetching users collection'})
     }
 }
 const deleteUser = async (req,res) => {
@@ -95,7 +105,7 @@ const deleteUser = async (req,res) => {
         }
     }
     catch(err){
-        res.status(500).json({message:err.message || 'Error fetching posts'})
+        res.status(500).json({message:err.message || 'Error fetching users collection'})
     }
 }
 
