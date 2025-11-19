@@ -1,18 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const validation = require('../middleware/validate')
+const {isAuthenticated} = require ("../middleware/authenticate")
 
 
 const userController = require('../controllers/user');
 
-router.get('/',  userController.getAll);
+router.get('/', isAuthenticated ,  userController.getAll);
 
-router.get('/:id', userController.getSingle);
+router.get('/:id', isAuthenticated, userController.getSingle);
 
-router.post('/', validation.saveContact, userController.createUser);
+router.post('/', isAuthenticated, validation.saveContact, userController.createUser);
 
-router.put('/:id', validation.saveContact, userController.updateUser);
+router.put('/:id', isAuthenticated, validation.saveContact, userController.updateUser);
 
-router.delete('/:id', userController.deleteUser);
+router.delete('/:id', isAuthenticated, userController.deleteUser);
 
 module.exports = router;
