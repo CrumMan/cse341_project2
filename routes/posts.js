@@ -5,7 +5,7 @@ const {isAuthenticated} = require ("../middleware/authenticate")
 
 const postController = require('../controllers/post');
 
-router.get('/', postController.getAll);
+router.get('/', isAuthenticated, postController.getAll);
 
 router.get('/:id', postController.getSingle);
 
