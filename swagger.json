@@ -5,7 +5,7 @@
     "description": "User Api for simple account creation",
     "version": "1.0.0"
   },
-  "host": "cse341-project2-6vtt.onrender.com/",
+  "host": "cse341-project2-6vtt.onrender.com",
   "basePath": "/",
   "schemes": [
     "https"
