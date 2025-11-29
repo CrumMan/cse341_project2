@@ -1,5 +1,5 @@
 const validator = require('../helpers/validate')
-const saveContact = (req,res,next) => {
+const savePost = (req,res,next) => {
     const validationRule = {
         content: "required|string"
     }
@@ -16,5 +16,5 @@ const saveContact = (req,res,next) => {
     })
 }
 module.exports = {
-    saveContact
+    savePost
 }
